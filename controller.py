@@ -1,6 +1,19 @@
 import turtle as trtl
 
 class Controller:
+
+    def __init__(self):
+        self.wn = trtl.Screen()
+        self.wn.title("Turtle Kart PC")
+        self.wn.setup(width=750, height=500)
+
+        self.buttonPressed = False
+        self.cont = True
+        self.gamemode = 0
+        self.windowxy = (750, 500)
+
+        self.cv = trtl.getcanvas()
+    
     def titleScreenClickHandler(self, x, y):
         if x > -12 and x < 310:
             if y < 105 and y > -4:
@@ -17,19 +30,16 @@ class Controller:
             if x > 3 and x < 312:
                 self.buttonPressed = True
                 self.gamemode = 2
-
-    def __init__(self):
-        self.wn = trtl.Screen()
-        self.wn.title("Turtle Kart PC")
-        self.wn.setup(width=750, height=500)
-
-        self.buttonPressed = False
-        self.cont = True
-        self.gamemode = 0
-        self.windowxy = (750, 500)
-
-        self.cv = trtl.getcanvas()
     
+    def chooseCarClickHandler(self, x, y): # TODO: Finish this
+        if x > -342 and x < 331:
+            if y > 45 and y < 151:
+                self.buttonPressed = True
+            if y > -83 and y < 16:
+                self.buttonPressed = True
+            if y > -214 and y < -118:
+                self.buttonPressed = True
+
     def chooseGameMode(self):
         trtl.clearscreen()
 
@@ -78,9 +88,25 @@ class Controller:
         self.wn.onclick(None)
         self.wn.listen()
         return self.cont
+
     def chooseCars(self, gm):
         trtl.clearscreen()
 
+        if gm == 1:
+            self.wn.bgpic("backgrounds/car_selection_1player.png")
+        if gm == 2:
+            self.wn.bgpic("backgrounds/car_selection_2player_p1.png")
+        
+        # Wait for selection
+        self.wn.onclick(self.chooseCarClickHandler)
+        self.wn.listen()
+        while not self.buttonPressed:
+            trtl.update()
+            trtl.delay(10)
+        # Reset stuff
+        self.wn.onclick(None)
+        self.wn.listen()
+        self.buttonPressed = False
 
-
+        trtl.clearscreen()
         trtl.mainloop()
