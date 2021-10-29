@@ -12,6 +12,8 @@ class Controller:
         self.gamemode = 0
         self.player1car = ""
         self.player2car = ""
+        self.elcarro1 = None
+        self.elcarro2 = None
         self.windowxy = (750, 500)
 
         self.cv = trtl.getcanvas()
@@ -45,7 +47,7 @@ class Controller:
                 else: self.player2car == "green"
             if y > -214 and y < -118:
                 self.buttonPressed = True
-                if self.player1car == "": self.player1car == "blue"
+                if self.player1car == "": self.player1car = "blue"
                 else: self.player2car = "blue"
 
     def chooseGameMode(self):
@@ -68,6 +70,17 @@ class Controller:
         # Go fullscreen and store dimensions
         # self.wn.setup(width=1.0, height = 1.0)
         # self.windowxy = self.wn.screensize()
+
+    def wCallback(self):
+        self.elcarro1.fd(10)
+
+    def aCallback(self):
+        self.elcarro1.lt(10)
+
+    # def sCallback():
+
+    # def dCallback():
+
 
     def titleScreen(self):
         # Listen for the click on either button
@@ -126,17 +139,36 @@ class Controller:
         self.wn.listen()
         self.buttonPressed = False
 
-        trtl.clearscreen()
-        trtl.mainloop()
-
-    def singlePlayer():
+    def singlePlayer(self):
         gameOver = False
 
+        # Create the first car
+        self.elcarro1 = trtl.Turtle(shape="square") 
+        self.elcarro1.ht()
+        self.elcarro1.seth(180)
+        self.elcarro1.color(self.player1car)
+        self.elcarro1.shapesize(stretch_wid= 1, stretch_len= 1.75)
+        self.elcarro1.pu()
+        self.elcarro1.goto(30, 150)
+        self.elcarro1.st()
 
+        # Movement callbacks
+        self.wn.onkeypress(self.wCallback, "w")
+        self.wn.onkeypress(self.aCallback, "a")
+        # self.wn.onkeypress(sCallback, "s")
+        # self.wn.onkeypress(dCallback, "d")
+
+        trtl.mainloop()
 
         # while not gameOver:
-
+    
+    def twoPlayer(self):
+        gameOver = False
+        elcarro = trtl.Turtle(shape ="square")
     def runGame(self):
+        trtl.clearscreen()
+        self.wn.bgpic("backgrounds/basic_track.png")
+
         if self.gamemode == 1:
             self.singlePlayer()
         if self.gamemode == 2:
