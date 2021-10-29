@@ -1,5 +1,7 @@
 import turtle as trtl
 
+# TODO: Add boundaries so that the turtle can't get lost from going off the screen
+
 class Controller:
 
     def __init__(self):
