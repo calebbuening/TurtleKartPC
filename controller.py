@@ -18,6 +18,11 @@ class Controller:
         self.elcarro2 = None
         self.windowxy = (750, 500)
 
+        self.buttonW = False
+        self.buttonA = False
+        self.buttonS = False
+        self.buttonD = False
+
         self.cv = trtl.getcanvas()
     
     def titleScreenClickHandler(self, x, y):
@@ -73,16 +78,15 @@ class Controller:
         # self.wn.setup(width=1.0, height = 1.0)
         # self.windowxy = self.wn.screensize()
 
-    def wCallback(self):
-        self.elcarro1.fd(10)
+    def buttonWPressed(self): self.buttonW = True
+    def buttonAPressed(self): self.buttonA = True
+    def buttonSPressed(self): self.buttonS = True
+    def buttonDPressed(self): self.buttonD = True
 
-    def aCallback(self):
-        self.elcarro1.lt(10)
-
-    # def sCallback():
-
-    # def dCallback():
-
+    def buttonWReleased(self): self.buttonW = False
+    def buttonAReleased(self): self.buttonA = False
+    def buttonSReleased(self): self.buttonS = False
+    def buttonDReleased(self): self.buttonD = False
 
     def titleScreen(self):
         # Listen for the click on either button
@@ -155,12 +159,22 @@ class Controller:
         self.elcarro1.st()
 
         # Movement callbacks
-        self.wn.onkeypress(self.wCallback, "w")
-        self.wn.onkeypress(self.aCallback, "a")
-        # self.wn.onkeypress(sCallback, "s")
-        # self.wn.onkeypress(dCallback, "d")
+        self.wn.onkeypress(self.buttonWPressed , "w")
+        self.wn.onkeypress(self.buttonAPressed, "a")
+        self.wn.onkeypress(self.buttonSPressed, "s")
+        self.wn.onkeypress(self.buttonDPressed, "d")
 
-        trtl.mainloop()
+        self.wn.onkeyrelease(self.buttonWReleased, "w")
+        self.wn.onkeyrelease(self.buttonAReleased, "a")
+        self.wn.onkeyrelease(self.buttonSReleased, "s")
+        self.wn.onkeyrelease(self.buttonDReleased, "d")
+
+        while True:
+            if self.buttonW: self.elcarro1.fd(1)
+            if self.buttonA: self.elcarro1.lt(10)
+            if self.buttonS: self.elcarro1.fd(-1)
+            if self.buttonD: self.elcarro1.rt(10)
+            trtl.update()
 
         # while not gameOver:
     
