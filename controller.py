@@ -10,6 +10,8 @@ class Controller:
         self.buttonPressed = False
         self.cont = True
         self.gamemode = 0
+        self.player1car = ""
+        self.player2car = ""
         self.windowxy = (750, 500)
 
         self.cv = trtl.getcanvas()
@@ -31,14 +33,20 @@ class Controller:
                 self.buttonPressed = True
                 self.gamemode = 2
     
-    def chooseCarClickHandler(self, x, y): # TODO: Finish this
+    def chooseCarClickHandler(self, x, y):
         if x > -342 and x < 331:
             if y > 45 and y < 151:
                 self.buttonPressed = True
+                if self.player1car == "": self.player1car = "red"
+                else: self.player2car = "red"
             if y > -83 and y < 16:
                 self.buttonPressed = True
+                if self.player1car == "": self.player1car = "green"
+                else: self.player2car == "green"
             if y > -214 and y < -118:
                 self.buttonPressed = True
+                if self.player1car == "": self.player1car == "blue"
+                else: self.player2car = "blue"
 
     def chooseGameMode(self):
         trtl.clearscreen()
@@ -89,20 +97,30 @@ class Controller:
         self.wn.listen()
         return self.cont
 
-    def chooseCars(self, gm):
+    def chooseCars(self):
         trtl.clearscreen()
 
-        if gm == 1:
+        if self.gamemode == 1:
             self.wn.bgpic("backgrounds/car_selection_1player.png")
-        if gm == 2:
+        if self.gamemode == 2:
             self.wn.bgpic("backgrounds/car_selection_2player_p1.png")
         
         # Wait for selection
         self.wn.onclick(self.chooseCarClickHandler)
         self.wn.listen()
+
         while not self.buttonPressed:
             trtl.update()
             trtl.delay(10)
+
+        self.buttonPressed = False
+        self.wn.bgpic("backgrounds/car_selection_2player_p2.png")
+
+        if(self.gamemode == 2):
+            while not self.buttonPressed:
+                trtl.update()
+                trtl.delay(10)
+        
         # Reset stuff
         self.wn.onclick(None)
         self.wn.listen()
@@ -110,3 +128,16 @@ class Controller:
 
         trtl.clearscreen()
         trtl.mainloop()
+
+    def singlePlayer():
+        gameOver = False
+
+
+
+        # while not gameOver:
+
+    def runGame(self):
+        if self.gamemode == 1:
+            self.singlePlayer()
+        if self.gamemode == 2:
+            self.twoPlayer()

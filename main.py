@@ -7,9 +7,8 @@ ctrl = controller.Controller()
 if ctrl.titleScreen(): # If this returns false the player doesn't want to continue
     # while True:
     gameMode = ctrl.chooseGameMode()
-    ctrl.chooseCars(gameMode)
+    ctrl.chooseCars()
 
-    # playAgain = True
-    # while playAgain:
-    #     map = ctrl.chooseMap()
-    #     playAgain = ctrl.runGame(gameMode, map)
+    playAgain = True
+    while playAgain:
+        playAgain = ctrl.runGame()
