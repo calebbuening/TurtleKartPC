@@ -8,6 +8,7 @@ class Controller:
         self.wn = trtl.Screen()
         self.wn.title("Turtle Kart PC")
         self.wn.setup(width=750, height=500)
+        self.wn.tracer(0, 0)
 
         self.buttonPressed = False
         self.cont = True
@@ -16,6 +17,8 @@ class Controller:
         self.player2car = ""
         self.elcarro1 = None
         self.elcarro2 = None
+        self.car1speed = 0
+        self.car2speed = 0
         self.windowxy = (750, 500)
 
         self.buttonW = False
@@ -159,7 +162,7 @@ class Controller:
         self.elcarro1.st()
 
         # Movement callbacks
-        self.wn.onkeypress(self.buttonWPressed , "w")
+        self.wn.onkeypress(self.buttonWPressed, "w")
         self.wn.onkeypress(self.buttonAPressed, "a")
         self.wn.onkeypress(self.buttonSPressed, "s")
         self.wn.onkeypress(self.buttonDPressed, "d")
@@ -170,14 +173,53 @@ class Controller:
         self.wn.onkeyrelease(self.buttonDReleased, "d")
 
         while True:
-            if self.buttonW: self.elcarro1.fd(1)
-            if self.buttonA: self.elcarro1.lt(10)
-            if self.buttonS: self.elcarro1.fd(-1)
-            if self.buttonD: self.elcarro1.rt(10)
+            # Update speeds
+            if self.player1car == "red":
+                if self.buttonW:
+                    self.car1speed += 30
+                elif self.buttonS:
+                    self.car1speed -= 15
+                else:
+                    self.car1speed *= .5
+
+            if self.player1car == "green":
+                if self.buttonW:
+                    self.car1speed += 20
+                elif self.buttonS:
+                    self.car1speed -= 10
+                else:
+                    self.car1speed *= .5
+
+            if self.player1car == "blue":
+                if self.buttonW:
+                    self.car1speed += 10
+                elif self.buttonS:
+                    self.car1speed -= 5
+                else:
+                    self.car1speed *= .5
+
+            # Max out the speeds
+            if self.player1car == "red" and self.car1speed > 50:
+                self.car1speed = 50
+            if self.player1car == "green" and self.car1speed > 75:
+                self.car1speed = 75
+            if self.player1car == "blue" and self.car1speed > 100:
+                self.car1speed = 100
+
+            self.car1speed *= .05
+
+            # Update displacements
+            if self.buttonA:
+                self.elcarro1.seth(self.elcarro1.heading() + 10)
+            if self.buttonD:
+                self.elcarro1.seth(self.elcarro1.heading() - 10)
+
+            self.elcarro1.fd(self.car1speed)
+
+
+            # Update laps + detect end of game
             trtl.update()
 
-        # while not gameOver:
-    
     def twoPlayer(self):
         gameOver = False
         elcarro = trtl.Turtle(shape ="square")
