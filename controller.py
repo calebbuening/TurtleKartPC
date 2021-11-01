@@ -10,6 +10,12 @@ class Controller:
         self.wn.setup(width=750, height=500)
         self.wn.tracer(0, 0)
 
+        self.lapTurtle = trtl.Turtle()
+        self.lapTurtle.pu()
+        self.lapTurtle.ht()
+        self.lapTurtle.goto(-350, 150) # -250,300
+        self.lapTurtle.pd()
+    
         self.buttonPressed = False
         self.cont = True
         self.gamemode = 0
@@ -19,7 +25,10 @@ class Controller:
         self.elcarro2 = None
         self.car1speed = 0
         self.car2speed = 0
+        self.car1laps = 0
+        self.car2laps = 0
         self.windowxy = (750, 500)
+        self.finishLine = False
 
         self.buttonW = False
         self.buttonA = False
@@ -148,6 +157,11 @@ class Controller:
         self.wn.listen()
         self.buttonPressed = False
 
+    def lap(self):
+        self.lapTurtle.clear()
+        self.lapTurtle.write("Lap: " + str(self.car1laps) + "/3", font=("Arial", 12, "normal"))
+        self.finishLine = True
+
     def singlePlayer(self):
         gameOver = False
 
@@ -156,7 +170,7 @@ class Controller:
         self.elcarro1.ht()
         self.elcarro1.seth(180)
         self.elcarro1.color(self.player1car)
-        self.elcarro1.shapesize(stretch_wid= 1, stretch_len= 1.75)
+        self.elcarro1.shapesize(stretch_wid= .5, stretch_len= .875)
         self.elcarro1.pu()
         self.elcarro1.goto(30, 150)
         self.elcarro1.st()
@@ -171,26 +185,21 @@ class Controller:
         self.wn.onkeyrelease(self.buttonAReleased, "a")
         self.wn.onkeyrelease(self.buttonSReleased, "s")
         self.wn.onkeyrelease(self.buttonDReleased, "d")
+        self.wn.onclick(print)
+        self.wn.listen()
 
-        while True:
+        gameOver = False
+        while not gameOver:
             # Update speeds
             if self.player1car == "red":
                 if self.buttonW:
-                    self.car1speed += 30
+                    self.car1speed += 15
                 elif self.buttonS:
-                    self.car1speed -= 15
+                    self.car1speed -= 8
                 else:
                     self.car1speed *= .5
 
             if self.player1car == "green":
-                if self.buttonW:
-                    self.car1speed += 20
-                elif self.buttonS:
-                    self.car1speed -= 10
-                else:
-                    self.car1speed *= .5
-
-            if self.player1car == "blue":
                 if self.buttonW:
                     self.car1speed += 10
                 elif self.buttonS:
@@ -198,15 +207,23 @@ class Controller:
                 else:
                     self.car1speed *= .5
 
-            # Max out the speeds
-            if self.player1car == "red" and self.car1speed > 50:
-                self.car1speed = 50
-            if self.player1car == "green" and self.car1speed > 75:
-                self.car1speed = 75
-            if self.player1car == "blue" and self.car1speed > 100:
-                self.car1speed = 100
+            if self.player1car == "blue":
+                if self.buttonW:
+                    self.car1speed += 5
+                elif self.buttonS:
+                    self.car1speed -= 2
+                else:
+                    self.car1speed *= .5
 
-            self.car1speed *= .05
+            # Max out the speeds
+            if self.player1car == "red" and self.car1speed > 1000:
+                self.car1speed = 1000
+            if self.player1car == "green" and self.car1speed > 1500:
+                self.car1speed = 1500
+            if self.player1car == "blue" and self.car1speed > 2000:
+                self.car1speed = 2000
+
+            self.car1speed *= .1
 
             # Update displacements
             if self.buttonA:
@@ -216,8 +233,21 @@ class Controller:
 
             self.elcarro1.fd(self.car1speed)
 
-
-            # Update laps + detect end of game
+            if(self.elcarro1.xcor() > 16 and self.elcarro1.xcor() < 18 \
+                and self.elcarro1.ycor() > 138 and self.elcarro1.ycor() < 188):
+                self.car1laps += 1 and not self.finishLine
+                if (self.car1laps > 2):
+                    gameOver = True
+                else:
+                    self.lap()
+            else:
+                self.finishLine = False
+            
+            if(self.elcarro1.xcor() > 12 and self.elcarro1.xcor() < 14 \
+                and self.elcarro1.ycor() > -121 and self.elcarro1.ycor() < -181):
+                # TODO: Add anti easy finish
+                
+            # Update laps
             trtl.update()
 
     def twoPlayer(self):
