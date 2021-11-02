@@ -1,4 +1,4 @@
-import turtle as trtl
+import turtle as trtl, leaderboard as lb
 
 # TODO: Add boundaries so that the turtle can't get lost from going off the screen
 
@@ -15,6 +15,12 @@ class Controller:
         self.lapTurtle.ht()
         self.lapTurtle.goto(-350, 150) # -250,300
         self.lapTurtle.pd()
+
+        self.counterTurtle = trtl.Turtle()
+        self.counterTurtle.pu()
+        self.counterTurtle.ht()
+        self.counterTurtle.goto(-350, 125)
+        self.counterTurtle.pd()
     
         self.buttonPressed = False
         self.cont = True
@@ -29,6 +35,8 @@ class Controller:
         self.car2laps = 0
         self.windowxy = (750, 500)
         self.finishLine = False
+        self.time = -1
+        self.prevTime = -1
 
         self.buttonW = False
         self.buttonA = False
@@ -157,10 +165,18 @@ class Controller:
         self.wn.listen()
         self.buttonPressed = False
 
+    def timer(self):
+        self.time += .5
+        self.counterTurtle.clear()
+        self.counterTurtle.write("Time: " + str(int(self.time)), font=("Arial", 12, "normal"))
+        trtl.ontimer(self.timer, 1000)
+
     def lap(self):
         self.lapTurtle.clear()
         self.lapTurtle.write("Lap: " + str(self.car1laps) + "/3", font=("Arial", 12, "normal"))
         self.finishLine = True
+        if self.car1laps == 1:
+            trtl.ontimer(self.timer, 1000)
 
     def singlePlayer(self):
         gameOver = False
@@ -242,13 +258,14 @@ class Controller:
                     self.lap()
             else:
                 self.finishLine = False
-            
-            if(self.elcarro1.xcor() > 12 and self.elcarro1.xcor() < 14 \
-                and self.elcarro1.ycor() > -121 and self.elcarro1.ycor() < -181):
-                # TODO: Add anti easy finish
+
+
+            # if(self.elcarro1.xcor() > 12 and self.elcarro1.xcor() < 14 \
+            #     and self.elcarro1.ycor() > -121 and self.elcarro1.ycor() < -181):
                 
-            # Update laps
+            # Update stuff
             trtl.update()
+            self.prevTime = self.time
 
     def twoPlayer(self):
         gameOver = False
