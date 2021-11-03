@@ -1,4 +1,6 @@
 import turtle as trtl, leaderboard as lb
+from threading import Thread
+from playsound import playsound
 
 # TODO: Add boundaries so that the turtle can't get lost from going off the screen
 
@@ -46,6 +48,10 @@ class Controller:
         self.buttonD = False
 
         self.cv = trtl.getcanvas()
+
+    def makeMusic(self):
+        while True:
+            playsound("sounds/TurtleGroove.wav")
     
     def titleScreenClickHandler(self, x, y):
         if x > -12 and x < 310:
@@ -275,6 +281,9 @@ class Controller:
     def runGame(self):
         trtl.clearscreen()
         self.wn.bgpic("backgrounds/basic_track.png")
+
+        musicThread = Thread(target=self.makeMusic, daemon=True)
+        musicThread.start()
 
         if self.gamemode == 1:
             self.singlePlayer()
