@@ -1,5 +1,6 @@
 #   leaderboard.py
 # The leaderboard module to be used in a122 solution.
+import turtle as trtl
 
 # set the levels of scoring
 bronze_score = 15
@@ -72,7 +73,8 @@ def update_leaderboard(file_name, leader_names, leader_scores, player_name, play
   
 
 # draw leaderboard and display a message to player
-def draw_leaderboard(leader_names, leader_scores, high_scorer, turtle_object, player_score, ct):
+def draw_leaderboard(leader_names, leader_scores, turtle_object):
+  trtl.clearscreen()
   
   # clear the screen and move turtle object to (-200, 100) to start drawing the leaderboard
   font_setup = ("Arial", 20, "normal")
@@ -91,17 +93,11 @@ def draw_leaderboard(leader_names, leader_scores, high_scorer, turtle_object, pl
 
   # loop through the lists and use the same index to display the corresponding name and score, separated by a tab space '\t'
   while leader_index < len(leader_names):
-    turtle_object.write(str(leader_index + 1) + "\t" + leader_names[leader_index] + "\t" + str(leader_scores[leader_index]), font=font_setup)
+    turtle_object.write(str(leader_index + 1) + "\t" + leader_names[len(leader_names) - leader_index - 1] + "\t" + str(leader_scores[len(leader_scores) - leader_index - 1]), font=font_setup)
     turtle_object.penup()
     turtle_object.goto(-200,int(turtle_object.ycor())-50)
     turtle_object.down()
     leader_index = leader_index + 1
-
-  # Display message about player making/not making leaderboard based on high_scorer
-  if (high_scorer):
-    turtle_object.write("Congratulations! You made the leaderboard!", font=font_setup)
-  else:
-    turtle_object.write("Sorry, you didn't make the leaderboard. Maybe next time!", font=font_setup)
 
   # move turtle to a new line
   turtle_object.penup()
@@ -115,4 +111,3 @@ def draw_leaderboard(leader_names, leader_scores, high_scorer, turtle_object, pl
     turtle_object.write("You earned a silver medal!", font=font_setup)
   elif (leader_index == 3):
     turtle_object.write("You earned a bronze medal!", font=font_setup)
-  ct.clear()

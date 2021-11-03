@@ -21,6 +21,8 @@ class Controller:
         self.counterTurtle.ht()
         self.counterTurtle.goto(-350, 125)
         self.counterTurtle.pd()
+
+        self.gameOver = False
     
         self.buttonPressed = False
         self.cont = True
@@ -78,6 +80,9 @@ class Controller:
                 else: self.player2car = "blue"
 
     def chooseGameMode(self):
+        self.gamemode = 1
+        return
+
         trtl.clearscreen()
 
         self.wn.bgpic("backgrounds/gamemode_selection.png")
@@ -166,10 +171,11 @@ class Controller:
         self.buttonPressed = False
 
     def timer(self):
-        self.time += .5
-        self.counterTurtle.clear()
-        self.counterTurtle.write("Time: " + str(int(self.time)), font=("Arial", 12, "normal"))
-        trtl.ontimer(self.timer, 1000)
+        if not self.gameOver:
+            self.time += 1
+            self.counterTurtle.clear()
+            self.counterTurtle.write("Time: " + str(int(self.time)), font=("Arial", 12, "normal"))
+            trtl.ontimer(self.timer, 1000)
 
     def lap(self):
         self.lapTurtle.clear()
@@ -204,8 +210,7 @@ class Controller:
         self.wn.onclick(print)
         self.wn.listen()
 
-        gameOver = False
-        while not gameOver:
+        while not self.gameOver:
             # Update speeds
             if self.player1car == "red":
                 if self.buttonW:
@@ -253,7 +258,7 @@ class Controller:
                 and self.elcarro1.ycor() > 138 and self.elcarro1.ycor() < 188):
                 self.car1laps += 1 and not self.finishLine
                 if (self.car1laps > 2):
-                    gameOver = True
+                    self.gameOver = True
                 else:
                     self.lap()
             else:
@@ -267,14 +272,10 @@ class Controller:
             trtl.update()
             self.prevTime = self.time
 
-    def twoPlayer(self):
-        gameOver = False
-        elcarro = trtl.Turtle(shape ="square")
     def runGame(self):
         trtl.clearscreen()
         self.wn.bgpic("backgrounds/basic_track.png")
 
         if self.gamemode == 1:
             self.singlePlayer()
-        if self.gamemode == 2:
-            self.twoPlayer()
+        return self.time
