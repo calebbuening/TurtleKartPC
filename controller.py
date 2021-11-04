@@ -1,6 +1,7 @@
 import turtle as trtl, leaderboard as lb
 from threading import Thread
 from playsound import playsound
+import time
 
 # TODO: Add boundaries so that the turtle can't get lost from going off the screen
 
@@ -39,7 +40,8 @@ class Controller:
         self.car2laps = 0
         self.windowxy = (750, 500)
         self.finishLine = False
-        self.time = -1
+        self.time = 0
+        self.startTime = 0
         self.prevTime = -1
 
         self.buttonW = False
@@ -176,23 +178,25 @@ class Controller:
         self.wn.listen()
         self.buttonPressed = False
 
-    def timer(self):
-        if not self.gameOver:
-            self.time += 1
+    def startTimer(self):
+        self.startTime = time.time()
+
+    def runTimer(self):
+        if not self.gameOver and self.time != str(int(time.time() - self.startTime)):
+            self.time = str(int(time.time() - self.startTime))
             self.counterTurtle.clear()
-            self.counterTurtle.write("Time: " + str(int(self.time)), font=("Arial", 12, "normal"))
-            trtl.ontimer(self.timer, 1000)
+            self.counterTurtle.write("Time: " + str(int(time.time() - self.startTime)), font=("Arial", 12, "normal"))
+            trtl.ontimer(self.runTimer, 1000)
 
     def lap(self):
         self.lapTurtle.clear()
         self.lapTurtle.write("Lap: " + str(self.car1laps) + "/3", font=("Arial", 12, "normal"))
         self.finishLine = True
         if self.car1laps == 1:
-            trtl.ontimer(self.timer, 1000)
+            self.startTimer()
+            trtl.ontimer(self.runTimer, 1000)
 
     def singlePlayer(self):
-        gameOver = False
-
         # Create the first car
         self.elcarro1 = trtl.Turtle(shape="square") 
         self.elcarro1.ht()
@@ -220,37 +224,35 @@ class Controller:
             # Update speeds
             if self.player1car == "red":
                 if self.buttonW:
-                    self.car1speed += 15
+                    self.car1speed += .015
                 elif self.buttonS:
-                    self.car1speed -= 8
+                    self.car1speed -= .08
                 else:
-                    self.car1speed *= .5
+                    self.car1speed *= .05
 
             if self.player1car == "green":
                 if self.buttonW:
-                    self.car1speed += 10
+                    self.car1speed += .010
                 elif self.buttonS:
-                    self.car1speed -= 5
+                    self.car1speed -= .05
                 else:
-                    self.car1speed *= .5
+                    self.car1speed *= .05
 
             if self.player1car == "blue":
                 if self.buttonW:
-                    self.car1speed += 5
+                    self.car1speed += .005
                 elif self.buttonS:
-                    self.car1speed -= 2
+                    self.car1speed -= .003
                 else:
-                    self.car1speed *= .5
+                    self.car1speed *= .05
 
             # Max out the speeds
-            if self.player1car == "red" and self.car1speed > 1000:
-                self.car1speed = 1000
-            if self.player1car == "green" and self.car1speed > 1500:
-                self.car1speed = 1500
-            if self.player1car == "blue" and self.car1speed > 2000:
-                self.car1speed = 2000
-
-            self.car1speed *= .1
+            if self.player1car == "red" and self.car1speed > 1:
+                self.car1speed = 1
+            if self.player1car == "green" and self.car1speed > 1.5:
+                self.car1speed = 1.5
+            if self.player1car == "blue" and self.car1speed > 2:
+                self.car1speed = 2
 
             # Update displacements
             if self.buttonA:
@@ -287,4 +289,4 @@ class Controller:
 
         if self.gamemode == 1:
             self.singlePlayer()
-        return self.time
+        return int(time.time() - self.startTime)
