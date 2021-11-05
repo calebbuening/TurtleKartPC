@@ -146,8 +146,6 @@ class Controller:
 
         if self.gamemode == 1:
             self.wn.bgpic("backgrounds/car_selection_1player.png")
-        if self.gamemode == 2:
-            self.wn.bgpic("backgrounds/car_selection_2player_p1.png")
         
         # Wait for selection
         self.wn.onclick(self.chooseCarClickHandler)
@@ -157,14 +155,6 @@ class Controller:
             trtl.update()
             trtl.delay(10)
 
-        self.buttonPressed = False
-        self.wn.bgpic("backgrounds/car_selection_2player_p2.png")
-
-        if(self.gamemode == 2):
-            while not self.buttonPressed:
-                trtl.update()
-                trtl.delay(10)
-        
         # Reset stuff
         self.wn.onclick(None)
         self.wn.listen()
