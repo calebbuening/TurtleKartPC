@@ -265,7 +265,7 @@ class Controller:
             if(self.elcarro1.xcor() > 16 and self.elcarro1.xcor() < 18 \
                 and self.elcarro1.ycor() > 138 and self.elcarro1.ycor() < 188):
                 self.car1laps += 1 and not self.finishLine
-                if (self.car1laps > 2):
+                if (self.car1laps > 3):
                     self.gameOver = True
                 else:
                     self.lap()

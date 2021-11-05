@@ -1,4 +1,4 @@
 mark,60
+D,60
+NOPE,59
 epic gamer,58
-Duane,42
-Seth,36
