@@ -11,6 +11,7 @@ leader_scores = []
 # Load the titlescreen, which will continue until the user presses play
 if ctrl.titleScreen(): # If this returns false the player doesn't want to continue
     # while True:
+    ctrl.chooseGameMode()
     ctrl.chooseCars()
     score = ctrl.runGame()
     name = trtl.textinput("Name", "Please input your name")
