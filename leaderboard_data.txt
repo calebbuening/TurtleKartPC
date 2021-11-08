@@ -1,4 +1,0 @@
-mark,60
-D,60
-NOPE,59
-epic gamer,58

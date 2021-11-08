@@ -1,24 +1,32 @@
+########################################################
+#                   Turtle Kart PC                     #
+#      Code by Caleb Buening and Dayton Molendorp      #
+#               Music by Adam Buening                  #
+#                   controller.py                      #
+########################################################
+
 import turtle as trtl, leaderboard as lb
 from threading import Thread
 from playsound import playsound
 import time
 
-# TODO: Add boundaries so that the turtle can't get lost from going off the screen
-
 class Controller:
 
     def __init__(self):
+        # Configure the screen
         self.wn = trtl.Screen()
         self.wn.title("Turtle Kart PC")
         self.wn.setup(width=750, height=500)
         self.wn.tracer(0, 0)
 
+        # Configure the turtle that prints out the lap
         self.lapTurtle = trtl.Turtle()
         self.lapTurtle.pu()
         self.lapTurtle.ht()
         self.lapTurtle.goto(-350, 150) # -250,300
         self.lapTurtle.pd()
 
+        # Configure the turtle that prints out the time
         self.counterTurtle = trtl.Turtle()
         self.counterTurtle.pu()
         self.counterTurtle.ht()
@@ -26,36 +34,39 @@ class Controller:
         self.counterTurtle.pd()
 
         self.gameOver = False
-    
-        self.buttonPressed = False
-        self.cont = True
-        self.gamemode = 0
-        self.player1car = ""
-        self.player2car = ""
-        self.elcarro1 = None
-        self.elcarro2 = None
+        self.buttonPressed = False # For loops that wait for a button to be pressed
+        self.cont = True # Stores titlescreen choice
+        self.gamemode = 0 # Unused
+        self.player1car = "" # Car color
+        self.player2car = "" # Unused
+        self.elcarro1 = None # The car object
+        self.elcarro2 = None # Unused
         self.car1speed = 0
         self.car2speed = 0
         self.car1laps = 0
         self.car2laps = 0
         self.windowxy = (750, 500)
-        self.finishLine = False
-        self.time = 0
+        self.finishLine = False # For when the car is on the finish line
+        self.time = 0 # For storing the current time
         self.startTime = 0
-        self.prevTime = -1
+        self.prevTime = -1 # For keeping track of if the time has changed or not
 
+        # Button state variables
         self.buttonW = False
         self.buttonA = False
         self.buttonS = False
         self.buttonD = False
 
+        # A canvas for fancy effects if necessary (Unused)
         self.cv = trtl.getcanvas()
 
     def makeMusic(self):
+        # Play the music until the code stops
         while True:
             playsound("sounds/TurtleGroove.wav")
     
     def titleScreenClickHandler(self, x, y):
+        # If a button has been pressed, set the buttonPressed variable and store cont = True if the game is to be played
         if x > -12 and x < 310:
             if y < 105 and y > -4:
                 self.buttonPressed = True
@@ -64,6 +75,7 @@ class Controller:
                 self.cont = False
 
     def gamemodeClickHandler(self, x, y):
+        # Same as above code buton with different button locations and action variables
         if y > -164 and y < 134:
             if x > -330 and x < -30:
                 self.buttonPressed = True
@@ -73,6 +85,7 @@ class Controller:
                 self.gamemode = 2
     
     def chooseCarClickHandler(self, x, y):
+        # See the commentary for the function above
         if x > -342 and x < 331:
             if y > 45 and y < 151:
                 self.buttonPressed = True
@@ -88,6 +101,7 @@ class Controller:
                 else: self.player2car = "blue"
 
     def chooseGameMode(self):
+        # We dont have a second gamemode because of time restrictions
         self.gamemode = 1
         return
 
@@ -111,6 +125,7 @@ class Controller:
         # self.wn.setup(width=1.0, height = 1.0)
         # self.windowxy = self.wn.screensize()
 
+    # Callback functions for setting button state variables
     def buttonWPressed(self): self.buttonW = True
     def buttonAPressed(self): self.buttonA = True
     def buttonSPressed(self): self.buttonS = True
@@ -152,13 +167,13 @@ class Controller:
     def chooseCars(self):
         trtl.clearscreen()
 
-        if self.gamemode == 1:
-            self.wn.bgpic("backgrounds/car_selection_1player.png")
+        self.wn.bgpic("backgrounds/car_selection_1player.png")
         
         # Wait for selection
         self.wn.onclick(self.chooseCarClickHandler)
         self.wn.listen()
 
+        # Wait for a button press
         while not self.buttonPressed:
             trtl.update()
             trtl.delay(10)
@@ -169,19 +184,27 @@ class Controller:
         self.buttonPressed = False
 
     def startTimer(self):
+        # This stores the start time for later use when calculating total race time
         self.startTime = time.time()
 
     def runTimer(self):
+        # As long as the game has not ended
         if not self.gameOver and self.time != str(int(time.time() - self.startTime)):
+            # Calculate time string
             self.time = str(int(time.time() - self.startTime))
+            # Print the time
             self.counterTurtle.clear()
             self.counterTurtle.write("Time: " + str(int(time.time() - self.startTime)), font=("Arial", 12, "normal"))
+            # Repeat 1 second from now
             trtl.ontimer(self.runTimer, 1000)
 
     def lap(self):
+        # Print out what lap we are now on
         self.lapTurtle.clear()
         self.lapTurtle.write("Lap: " + str(self.car1laps) + "/3", font=("Arial", 12, "normal"))
         self.finishLine = True
+
+        # Start the timer when the race starts
         if self.car1laps == 1:
             self.startTimer()
             trtl.ontimer(self.runTimer, 1000)
@@ -244,23 +267,32 @@ class Controller:
             if self.player1car == "blue" and self.car1speed > 2:
                 self.car1speed = 2
 
+            if self.player1car == "red" and self.car1speed < -1:
+                self.car1speed = -1
+            if self.player1car == "green" and self.car1speed < -1.5:
+                self.car1speed = -1.5
+            if self.player1car == "blue" and self.car1speed < -2:
+                self.car1speed = -2
+
             # Update displacements
             if self.buttonA:
                 self.elcarro1.seth(self.elcarro1.heading() + 10)
             if self.buttonD:
                 self.elcarro1.seth(self.elcarro1.heading() - 10)
 
+            # Apply displacements
             self.elcarro1.fd(self.car1speed)
 
+            # Detect if the car has crossed the finish line, and if it was already on the finish line or not
             if(self.elcarro1.xcor() > 16 and self.elcarro1.xcor() < 18 \
-                and self.elcarro1.ycor() > 138 and self.elcarro1.ycor() < 188):
-                self.car1laps += 1 and not self.finishLine
-                if (self.car1laps > 3):
+                and self.elcarro1.ycor() > 138 and self.elcarro1.ycor() < 188): # Finish line boundaries
+                self.car1laps += 1 and not self.finishLine # Add a lap to the counter
+                if (self.car1laps > 3): # Finish the game on the last lap
                     self.gameOver = True
                 else:
-                    self.lap()
+                    self.lap() # Run the lap code
             else:
-                self.finishLine = False
+                self.finishLine = False # If we aren't on the finish line, keep this variable set to false
 
 
             # if(self.elcarro1.xcor() > 12 and self.elcarro1.xcor() < 14 \
@@ -268,15 +300,16 @@ class Controller:
                 
             # Update stuff
             trtl.update()
-            self.prevTime = self.time
 
     def runGame(self):
+        # Load background
         trtl.clearscreen()
         self.wn.bgpic("backgrounds/basic_track.png")
 
+        # Run background music (Daemon causes the music to stop when the rest of the code does)
         musicThread = Thread(target=self.makeMusic, daemon=True)
         musicThread.start()
 
-        if self.gamemode == 1:
-            self.singlePlayer()
-        return int(time.time() - self.startTime)
+        self.singlePlayer()
+
+        return int(time.time() - self.startTime) # Returns the car's finish time

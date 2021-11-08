@@ -59,8 +59,8 @@ def update_leaderboard(file_name, leader_names, leader_scores, player_name, play
     leader_names.insert(leader_index, player_name)
 
   # TODO 8: keep both lists at 5 elements only (top 5 players)
-  leader_names = leader_names[0:4]
-  leader_scores = leader_scores[0:4]
+  leader_names = leader_names[1:5]
+  leader_scores = leader_scores[1:5]
   
   # store the latest leaderboard back in the file
   leaderboard_file = open(file_name, "w")  # this mode opens the file and erases its contents for a fresh start
@@ -70,7 +70,6 @@ def update_leaderboard(file_name, leader_names, leader_scores, player_name, play
     leaderboard_file.write(leader_names[leader_index] + "," + str(leader_scores[leader_index]) + "\n")
     leader_index = leader_index + 1
   leaderboard_file.close()
-  
 
 # draw leaderboard and display a message to player
 def draw_leaderboard(leader_names, leader_scores, turtle_object):
